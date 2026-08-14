@@ -448,7 +448,7 @@ function screens(entry){
               revealed:S.viewerSelected!==null, selectedId:S.viewerSelected, onVote: id => "voteViewer('" + id + "')"
             }) +
           '</div>' +
-          '<div class="see-results" onclick="push(\'pollDetail\')"><span>See other results</span><span>›</span></div>' +
+          '<div class="see-results" onclick="push(\'pollDetail\')"><span>See other results</span>' + ICON_CHEVRON_RIGHT + '</div>' +
         '</div>' +
         '<div style="height:24px;"></div>',
       footer: viewerBottomBarHTML()
