@@ -32,6 +32,9 @@ body{
   background:var(--backdrop);
   color:var(--text-primary);
   font-family:'Poppins',-apple-system,BlinkMacSystemFont,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
   min-height:100vh;
   min-height:100dvh;
   display:flex;
@@ -156,6 +159,7 @@ img{max-width:100%;}
 .vbar{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--surface-bottom);}
 .vbar-pill{display:flex;align-items:center;gap:5px;padding:8px 12px;border-radius:999px;background:var(--surface-container-high);font:500 13px 'Poppins';color:var(--text-primary);}
 .vbar-icon-btn{width:36px;height:36px;border-radius:999px;background:var(--surface-container-high);display:flex;align-items:center;justify-content:center;color:var(--text-primary);font-size:15px;}
+.icon-tpl{display:inline-block;flex-shrink:0;background-color:var(--text-primary);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;-webkit-mask-size:contain;mask-repeat:no-repeat;mask-position:center;mask-size:contain;}
 .vbar-spacer{flex:1;}
 .vbar-next{display:flex;align-items:center;gap:4px;padding:10px 16px;border-radius:999px;background:var(--purple);font:600 14px 'Poppins';color:var(--text-primary);}
 .cbar{padding:12px 16px 0;background:var(--surface-bottom);}
@@ -175,7 +179,7 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 .hl-empty img{width:20px;height:20px;}
 .hl-caption{font:400 11px 'Poppins';color:var(--text-placeholder);}
 .hl-selected{position:relative;border-radius:12px;overflow:hidden;}
-.hl-remove{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:999px;background:rgba(0,0,0,.6);color:var(--text-primary);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.hl-remove{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:999px;background:rgba(0,0,0,.6);color:var(--text-primary);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;}
 .hl-change{position:absolute;bottom:8px;right:8px;padding:7px 12px;border-radius:999px;background:rgba(0,0,0,.6);font:500 12px 'Poppins';color:var(--text-primary);}
 
 .post-btn-wrap{padding:12px 16px;background:var(--surface-base);}
@@ -465,8 +469,8 @@ function screens(entry){
 
 function viewerBottomBarHTML(){
   return '<div class="vbar">' +
-    '<div class="vbar-pill"><img src="' + IMG.iconComment + '" style="width:16px;height:16px;filter:invert(1) brightness(2);"><span>9,999</span></div>' +
-    '<div class="vbar-icon-btn"><img src="' + IMG.iconCapture + '" style="width:20px;height:20px;filter:invert(1) brightness(2);"></div>' +
+    '<div class="vbar-pill"><span class="icon-tpl" style="width:16px;height:16px;-webkit-mask-image:url(\'' + IMG.iconComment + '\');mask-image:url(\'' + IMG.iconComment + '\');"></span><span>9,999</span></div>' +
+    '<div class="vbar-icon-btn"><span class="icon-tpl" style="width:20px;height:20px;-webkit-mask-image:url(\'' + IMG.iconCapture + '\');mask-image:url(\'' + IMG.iconCapture + '\');"></span></div>' +
     '<div class="vbar-spacer"></div>' +
     '<div class="vbar-icon-btn">‹</div>' +
     '<div class="vbar-next"><span>Next Episode</span><span>›</span></div>' +
@@ -619,7 +623,7 @@ function composeBodyHTML(){
           ? '<div class="hl-selected">' + highlightThumbHTML(c.highlight) +
             '<button class="hl-remove" onclick="removeHighlight()">✕</button>' +
             '<button class="hl-change" onclick="openPicker()">Change</button></div>'
-          : '<button class="hl-empty" onclick="openPicker()"><img src="' + IMG.iconCapture + '" style="filter:invert(1) brightness(2);"><span>Add a moment from this episode</span></button>'
+          : '<button class="hl-empty" onclick="openPicker()"><span class="icon-tpl" style="width:20px;height:20px;-webkit-mask-image:url(\'' + IMG.iconCapture + '\');mask-image:url(\'' + IMG.iconCapture + '\');"></span><span>Add a moment from this episode</span></button>'
         ) +
         '<div class="hl-caption">You can only pick a moment from this episode.</div>' +
       '</div>' +
