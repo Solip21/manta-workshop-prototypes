@@ -47,8 +47,6 @@ button{cursor:pointer;}
 img{max-width:100%;}
 
 .stage{display:flex;flex-direction:column;align-items:center;gap:18px;}
-.caption{font:400 12px/1.6 'Poppins';color:var(--text-tertiary);text-align:center;max-width:390px;}
-.caption b{color:var(--text-secondary);font-weight:500;}
 
 .device{
   position:relative;
@@ -65,7 +63,6 @@ img{max-width:100%;}
 @media (max-width:520px){
   body{padding:0;}
   .device{width:100vw;height:100dvh;max-height:none;border-radius:0;box-shadow:none;}
-  .caption{display:none;}
 }
 
 .statusbar{
@@ -133,6 +130,7 @@ img{max-width:100%;}
 
 /* poll card */
 .poll-card{background:var(--surface-container);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;position:relative;}
+.poll-eyebrow-wrap{display:flex;flex-direction:column;gap:16px;}
 .poll-eyebrow{font:400 12px 'Poppins';color:var(--text-tertiary);}
 .poll-question{font:600 18px 'Poppins';color:var(--text-primary);line-height:1.3;}
 .poll-highlight{position:relative;overflow:hidden;border-radius:12px;width:100%;background:var(--surface-container-highest);}
@@ -153,7 +151,7 @@ img{max-width:100%;}
 .copyright-block{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 16px;}
 .copyright-block img{width:90px;height:24px;object-fit:contain;}
 .copyright-block p{margin:0;font:400 11px 'Poppins';color:var(--wordmark-caption);text-align:center;line-height:1.4;}
-.see-results{display:flex;align-items:center;gap:4px;padding:0 16px;font:500 14px 'Poppins';color:var(--text-tertiary);}
+.see-results{display:flex;align-items:center;justify-content:center;gap:4px;padding:0 16px;font:500 14px 'Poppins';color:var(--text-tertiary);}
 
 /* bottom bars */
 .vbar{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--surface-bottom);}
@@ -243,7 +241,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
     <div class="home-indicator"></div>
     <div class="toast" id="toast"></div>
   </div>
-  <p class="caption"><b>Manta Playground</b> — Episode Interpretation Poll &amp; Context Badge prototype, mirroring the Xcode Simulator build. Tap through like the real app.</p>
 </div>
 
 <script>
@@ -518,6 +515,9 @@ function back(){
   prevNode.className = 'screen';
   prevNode.innerHTML = '<div class="body">' + prevDef.body + '</div>' + (prevDef.footer ? '<div class="footer">' + prevDef.footer + '</div>' : '');
   container.insertBefore(prevNode, top);
+  // drop any stale screen nodes left over from earlier pushes so duplicate
+  // ids (e.g. #poll-list) don't shadow the node we just inserted
+  while(container.children.length > 2) container.removeChild(container.firstChild);
   renderNav(stack[stack.length-1]);
   if(prevDef.onMount) prevDef.onMount();
   requestAnimationFrame(()=>{ top.style.transform = 'translateX(100%)'; });
