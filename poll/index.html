@@ -51,7 +51,7 @@ img{max-width:100%;}
 .device-frame{
   position:relative;
   padding:12px;
-  background:linear-gradient(155deg,#5a5a5e 0%,#2c2c2e 18%,#1a1a1c 45%,#3a3a3d 75%,#0a0a0a 100%);
+  background:linear-gradient(155deg,#3c3c40 0%,#1c1c1e 18%,#0f0f10 45%,#242426 75%,#050505 100%);
   border-radius:62px;
   box-shadow:0 40px 90px -25px rgba(0,0,0,.65), inset 0 0 0 1px rgba(255,255,255,.12), inset 0 1px 2px rgba(255,255,255,.25);
 }
@@ -67,11 +67,6 @@ img{max-width:100%;}
   display:flex;
   flex-direction:column;
 }
-.dynamic-island{
-  position:absolute;top:12px;left:50%;transform:translateX(-50%);
-  width:120px;height:36px;background:#000;border-radius:20px;z-index:100;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
-}
 .side-btn{position:absolute;background:linear-gradient(180deg,#4a4a4d,#242426);}
 .side-btn-mute{left:-2px;top:135px;width:3px;height:30px;border-radius:2px 0 0 2px;}
 .side-btn-vol-up{left:-2px;top:185px;width:3px;height:58px;border-radius:2px 0 0 2px;}
@@ -81,7 +76,6 @@ img{max-width:100%;}
   body{padding:0;}
   .device-frame{padding:0;border-radius:0;box-shadow:none;background:none;}
   .device{width:100vw;height:100dvh;max-height:none;border-radius:0;box-shadow:none;}
-  .dynamic-island{display:none;}
   .side-btn{display:none;}
 }
 
@@ -248,7 +242,6 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 <body>
 <div class="stage">
   <div class="device-frame">
-    <div class="dynamic-island"></div>
     <div class="side-btn side-btn-mute"></div>
     <div class="side-btn side-btn-vol-up"></div>
     <div class="side-btn side-btn-vol-down"></div>
