@@ -166,10 +166,12 @@ img{max-width:100%;}
 /* compose / highlight-field */
 .field-label{font:500 12px 'Poppins';color:var(--text-secondary);}
 .field-label .optional{font:400 12px 'Poppins';color:var(--text-placeholder);margin-left:6px;}
-textarea.q-field{width:100%;font:500 16px 'Poppins';color:var(--text-primary);padding:16px;background:var(--surface-container);border-radius:16px;resize:none;overflow:hidden;line-height:1.35;}
+textarea.q-field{width:100%;font:500 16px 'Poppins';color:var(--text-primary);padding:16px;background:var(--surface-container);border-radius:16px;resize:none;overflow:hidden;line-height:1.35;outline:none;box-shadow:0 0 0 0 transparent;transition:box-shadow .15s;}
+textarea.q-field:focus{box-shadow:0 0 0 1.5px var(--purple);}
 textarea.q-field::placeholder{color:var(--text-placeholder);}
 .opt-row{display:flex;align-items:center;gap:8px;}
-.opt-row input{flex:1;font:600 14px 'Poppins';color:var(--text-primary);padding:16px;background:var(--surface-container-highest);border-radius:12px;}
+.opt-row input{flex:1;font:600 14px 'Poppins';color:var(--text-primary);padding:16px;background:var(--surface-container-highest);border-radius:12px;outline:none;box-shadow:0 0 0 0 transparent;transition:box-shadow .15s;}
+.opt-row input:focus{box-shadow:0 0 0 1.5px var(--purple);}
 .opt-row input::placeholder{color:var(--text-placeholder);}
 .opt-remove{width:22px;height:22px;color:var(--text-tertiary);font-size:18px;flex-shrink:0;}
 .add-option{display:flex;align-items:center;gap:4px;font:500 14px 'Poppins';color:var(--brand-link);padding:4px 0;}
@@ -246,6 +248,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 <script>
 // Manta Design system Library_2025 — icon16/ic-chevron-left_16x16, icon12/ic-chevron-right_12x12
 const ICON_CHEVRON_LEFT = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:block;"><path d="M11.5302 3.03027L6.56049 8L11.5302 12.9697L10.4697 14.0303L4.96967 8.53027C4.67678 8.23738 4.67678 7.76262 4.96967 7.46973L10.4697 1.96973L11.5302 3.03027Z" fill="currentColor"/></svg>';
+const ICON_CHEVRON_LEFT_28 = '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block;"><path d="M19.207 4.70703L9.91399 14L19.207 23.293L17.7929 24.707L7.79289 14.707C7.40237 14.3165 7.40237 13.6835 7.79289 13.293L17.7929 3.29297L19.207 4.70703Z" fill="currentColor"/></svg>';
 const ICON_CHEVRON_RIGHT = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="display:block;"><path d="M4.53027 1.46973L8.53027 5.46973C8.67093 5.61038 8.75 5.80109 8.75 6C8.75 6.19891 8.67093 6.38962 8.53027 6.53027L4.53027 10.5303L3.46973 9.46973L6.93945 6L3.46973 2.53027L4.53027 1.46973Z" fill="currentColor"/></svg>';
 
 const IMG = {
@@ -483,7 +486,7 @@ function viewerBottomBarHTML(){
 function renderNav(entry){
   const nav = document.getElementById('navbar');
   const def = screens(entry);
-  nav.innerHTML = (entry !== stack[0] ? '<button class="nav-back" onclick="back()">‹</button>' : '') +
+  nav.innerHTML = (entry !== stack[0] ? '<button class="nav-back" onclick="back()">' + ICON_CHEVRON_LEFT_28 + '</button>' : '') +
     (def.title ? '<div class="nav-title">' + escapeHtml(def.title) + '</div>' : '');
 }
 
