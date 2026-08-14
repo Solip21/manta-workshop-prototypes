@@ -1,4 +1,4 @@
-# Playground — Episode Interpretation Poll
+# Poll — Episode Interpretation Poll
 
 Design팀 AI 워크샵 프로젝트. Xcode 프로젝트 `Playground`(로컬: `~/Developer/Playground`)의 Episode Interpretation Poll 시나리오를 웹으로 그대로 옮긴 클릭 가능한 프로토타입입니다. 설치 없이 링크 하나로 팀원이 iOS Safari를 포함한 아무 브라우저에서 탭해볼 수 있습니다.
 
@@ -20,4 +20,4 @@ Xcode `Playground` 프로젝트에서 이 시나리오가 바뀌면 이 폴더�
 
 ## 배포
 
-https://manta-workshop-prototypes.vercel.app/playground/
+https://manta-workshop-prototypes.vercel.app/poll/

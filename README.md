@@ -26,6 +26,6 @@ AI 워크샵에서 만든 클릭 가능한 프로토타입을 아카이브하고
 
 | 폴더 | 배포 링크 | 워크샵 | 관련 문서 |
 |---|---|---|---|
-| [`playground`](./playground) | [바로가기](https://manta-workshop-prototypes.vercel.app/playground/) | Episode Interpretation Poll | [Poll One Pager](https://app.notion.com/p/ridi/One-Pager-3b12d79d7707809db6f2cbc896032d11) |
+| [`poll`](./poll) | [바로가기](https://manta-workshop-prototypes.vercel.app/poll/) | Episode Interpretation Poll | [Poll One Pager](https://app.notion.com/p/ridi/One-Pager-3b12d79d7707809db6f2cbc896032d11) |
 
 > Context Badge, Effects Test/Haptic Feedback 시나리오는 이 저장소가 아니라 다른 프로젝트라서 [manta-prototypes](https://github.com/Solip21/manta-prototypes), [interaction-test](https://github.com/Solip21/interaction-test) 저장소로 옮겼습니다.
