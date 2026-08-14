@@ -180,8 +180,9 @@ img{max-width:100%;}
 .cbar-pill{display:flex;align-items:center;padding:12px 16px;border-radius:999px;background:var(--surface-container-high);font:400 14px 'Poppins';color:var(--text-placeholder);}
 
 /* compose / highlight-field */
-.field-label{font:500 12px 'Poppins';color:var(--text-secondary);}
+.field-label{display:flex;align-items:center;font:500 12px 'Poppins';color:var(--text-secondary);}
 .field-label .optional{font:400 12px 'Poppins';color:var(--text-placeholder);margin-left:6px;}
+.required-dot{width:4px;height:4px;border-radius:999px;background:var(--accent-red);margin-left:5px;flex-shrink:0;}
 textarea.q-field{width:100%;font:500 16px 'Poppins';color:var(--text-primary);padding:16px;background:var(--surface-container);border-radius:16px;resize:none;overflow:hidden;line-height:1.35;outline:none;box-shadow:0 0 0 0 transparent;transition:box-shadow .15s;}
 textarea.q-field:focus{box-shadow:0 0 0 1.5px var(--purple);}
 textarea.q-field::placeholder{color:var(--text-placeholder);}
@@ -194,17 +195,24 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 .hl-empty{display:flex;align-items:center;gap:8px;padding:16px;background:var(--surface-container);border-radius:16px;border:1px dashed var(--border-mute);font:500 14px 'Poppins';color:var(--text-secondary);}
 .hl-empty-plus{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font:500 16px 'Poppins';color:var(--text-secondary);}
 .hl-caption{font:400 11px 'Poppins';color:var(--text-placeholder);}
-.hl-selected{position:relative;border-radius:12px;overflow:hidden;}
-.hl-remove{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:999px;background:rgba(0,0,0,.6);color:var(--text-primary);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;}
-.hl-add{position:absolute;bottom:8px;right:8px;width:28px;height:28px;border-radius:999px;background:rgba(0,0,0,.6);font:600 16px 'Poppins';color:var(--text-primary);display:flex;align-items:center;justify-content:center;}
+.hl-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.hl-tile{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:1/1;}
+.hl-tile-remove{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:999px;background:rgba(0,0,0,.6);color:var(--text-primary);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;}
+.hl-tile-add{background:var(--surface-container);border:1px dashed var(--border-mute);display:flex;align-items:center;justify-content:center;font:500 20px 'Poppins';color:var(--text-secondary);}
 
 .post-btn-wrap{padding:12px 16px;background:var(--surface-base);}
 .post-btn{width:100%;text-align:center;padding:14px;border-radius:8px;font:600 14px 'Poppins';color:var(--text-primary);background:var(--surface-container-highest);}
 .post-btn.enabled{background:var(--purple);}
 
-/* overlays: compose sheet + highlight picker */
+/* overlays: highlight picker bottom sheet */
+.overlay-backdrop{
+  position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:39;
+  opacity:0;transition:opacity .3s;
+}
+.overlay-backdrop.open{opacity:1;}
 .overlay{
-  position:absolute;inset:0;background:var(--surface-base);z-index:40;
+  position:absolute;left:0;right:0;bottom:0;height:60%;
+  background:var(--surface-base);z-index:40;border-radius:20px 20px 0 0;
   display:flex;flex-direction:column;transform:translateY(100%);
   transition:transform .3s cubic-bezier(.22,.61,.36,1);
 }
@@ -318,7 +326,7 @@ const S = {
 
   openMenuPollId:null,
 
-  compose:{mode:'new', pollId:null, question:'', options:['',''], highlight:null},
+  compose:{mode:'new', pollId:null, question:'', options:['',''], highlights:[]},
   picker:{open:false}
 };
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -492,7 +500,8 @@ function screens(entry){
     case 'pollCompose': return {
       title:'', back:true,
       body: composeBodyHTML(),
-      footer: composeFooterHTML()
+      footer: composeFooterHTML(),
+      onMount: focusComposeQuestionIfNew
     };
   }
 }
@@ -572,13 +581,19 @@ function openCompose(mode, pollId){
     const poll = S.pollSummaries.find(p=>p.id===pollId);
     S.compose.question = poll.question;
     S.compose.options = poll.options.map(o=>o.label);
-    S.compose.highlight = poll.highlight ? {...poll.highlight} : null;
+    S.compose.highlights = (poll.highlight && poll.highlight.sceneKey) ? [poll.highlight.sceneKey] : [];
   } else {
     S.compose.question = '';
     S.compose.options = ['',''];
-    S.compose.highlight = null;
+    S.compose.highlights = [];
   }
   push('pollCompose');
+}
+
+function focusComposeQuestionIfNew(){
+  if(S.compose.mode==='edit') return;
+  const el = document.querySelector('.q-field');
+  if(el) el.focus();
 }
 
 function updateQuestion(val){ S.compose.question = val; updatePostButton(); }
@@ -613,13 +628,16 @@ function updatePostButton(){
   btn.disabled = !ok;
 }
 
-function removeHighlight(){ S.compose.highlight = null; rerenderCompose(); }
+function removeHighlight(sceneKey){
+  S.compose.highlights = S.compose.highlights.filter(k=>k!==sceneKey);
+  rerenderCompose();
+}
 
 function submitCompose(){
   if(!canPost()) return;
   const question = S.compose.question.trim();
   const options = S.compose.options.map(o=>o.trim()).filter(Boolean);
-  const highlight = S.compose.highlight;
+  const highlight = S.compose.highlights.length ? {sceneKey:S.compose.highlights[0]} : null;
   if(S.compose.mode==='edit'){
     const poll = S.pollSummaries.find(p=>p.id===S.compose.pollId);
     poll.question = question;
@@ -647,21 +665,29 @@ function composeBodyHTML(){
     '<div style="padding:16px;display:flex;flex-direction:column;gap:24px;">' +
       '<div class="compose-heading"><h1>Ask Readers</h1><p>Only readers who finished this episode can answer</p></div>' +
       '<div class="compose-block">' +
-        '<div class="field-label">Question</div>' +
+        '<div class="field-label">Question<span class="required-dot"></span></div>' +
         '<textarea class="q-field" rows="1" placeholder="Do you think this choice was genuine?" oninput="autoGrow(this); updateQuestion(this.value)">' + escapeHtml(c.question) + '</textarea>' +
       '</div>' +
       '<div class="compose-block">' +
         '<div class="field-label">Highlight<span class="optional">Optional</span></div>' +
-        (c.highlight
-          ? '<div class="hl-selected">' + highlightThumbHTML(c.highlight) +
-            '<button class="hl-remove" onclick="removeHighlight()">✕</button>' +
-            '<button class="hl-add" onclick="openPicker()">+</button></div>'
-          : '<button class="hl-empty" onclick="openPicker()"><span class="hl-empty-plus">+</span><span>Add a highlight moment</span></button>'
+        (c.highlights.length===0
+          ? '<button class="hl-empty" onclick="openPicker()"><span class="hl-empty-plus">+</span><span>Add a highlight moment</span></button>'
+          : '<div class="hl-row">' +
+              c.highlights.map(key =>
+                '<div class="hl-tile">' + highlightThumbHTML({sceneKey:key}) +
+                  '<button class="hl-tile-remove" onclick="removeHighlight(\'' + key + '\')">✕</button>' +
+                '</div>'
+              ).join('') +
+              (c.highlights.length < SCENE_KEYS.length
+                ? '<button class="hl-tile hl-tile-add" onclick="openPicker()"><span>+</span></button>'
+                : ''
+              ) +
+            '</div>'
         ) +
-        '<div class="hl-caption">Choose one of the highlight moments from this episode.</div>' +
+        '<div class="hl-caption">Choose one or more highlight moments from this episode.</div>' +
       '</div>' +
       '<div class="compose-block" style="gap:12px;">' +
-        '<div class="field-label">Answer options</div>' +
+        '<div class="field-label">Answer options<span class="required-dot"></span></div>' +
         '<div style="display:flex;flex-direction:column;gap:8px;">' +
           c.options.map((val,i)=>
             '<div class="opt-row">' +
@@ -694,8 +720,10 @@ function openPicker(){
 }
 function closePickerOverlay(afterClose){
   const el = document.getElementById('picker-overlay');
+  const backdrop = document.getElementById('picker-backdrop');
   if(el){
     el.classList.remove('open');
+    if(backdrop) backdrop.classList.remove('open');
     el.addEventListener('transitionend', ()=>{ S.picker.open = false; afterClose && afterClose(); renderOverlays(); }, {once:true});
   } else {
     S.picker.open = false;
@@ -704,24 +732,36 @@ function closePickerOverlay(afterClose){
   }
 }
 function closePicker(){ closePickerOverlay(); }
-function selectScene(sceneKey){
-  closePickerOverlay(()=>{ S.compose.highlight = {sceneKey}; rerenderCompose(); });
+
+// multi-select: tapping a tile toggles it in place, live-updating the
+// compose screen behind the sheet — no separate confirm step needed.
+function toggleScene(sceneKey){
+  const i = S.compose.highlights.indexOf(sceneKey);
+  if(i===-1) S.compose.highlights.push(sceneKey);
+  else S.compose.highlights.splice(i,1);
+  rerenderCompose();
+  const grid = document.getElementById('scene-grid');
+  if(grid) grid.innerHTML = sceneTilesHTML();
+}
+
+function sceneTilesHTML(){
+  return SCENE_KEYS.map(key => {
+    const selected = S.compose.highlights.includes(key);
+    return '<button class="scene-tile' + (selected ? ' selected' : '') + '" onclick="toggleScene(\'' + key + '\')">' +
+      '<img src="' + IMG.scenes[key] + '" style="object-position:' + SCENE_FOCAL[key] + ';">' +
+      (selected ? '<span class="scene-tile-check">✓</span>' : '') +
+    '</button>';
+  }).join('');
 }
 
 function pickerOverlayHTML(){
-  const current = S.compose.highlight && S.compose.highlight.sceneKey;
-  const tiles = SCENE_KEYS.map(key =>
-    '<button class="scene-tile' + (key===current ? ' selected' : '') + '" onclick="selectScene(\'' + key + '\')">' +
-      '<img src="' + IMG.scenes[key] + '" style="object-position:' + SCENE_FOCAL[key] + ';">' +
-      (key===current ? '<span class="scene-tile-check">✓</span>' : '') +
-    '</button>'
-  ).join('');
   return (
+    '<div class="overlay-grabber"><i></i></div>' +
     '<div class="overlay-header">' +
       '<button class="left" onclick="closePicker()">Cancel</button>' +
       '<div class="title">Pick a moment</div>' +
     '</div>' +
-    '<div class="scene-grid">' + tiles + '</div>'
+    '<div class="scene-grid" id="scene-grid">' + sceneTilesHTML() + '</div>'
   );
 }
 
@@ -730,12 +770,19 @@ function renderOverlays(){
   const hadPicker = !!document.getElementById('picker-overlay');
   let html = '';
   if(S.picker.open){
-    html += '<div class="overlay" id="picker-overlay" style="z-index:50;">' + pickerOverlayHTML() + '</div>';
+    html += '<div class="overlay-backdrop" id="picker-backdrop" onclick="closePicker()"></div>';
+    html += '<div class="overlay" id="picker-overlay">' + pickerOverlayHTML() + '</div>';
   }
   root.innerHTML = html;
-  root.querySelectorAll('.overlay').forEach(n=>{ n.getBoundingClientRect(); });
-  if(S.picker.open && !hadPicker) requestAnimationFrame(()=>requestAnimationFrame(()=>document.getElementById('picker-overlay').classList.add('open')));
-  else if(S.picker.open) document.getElementById('picker-overlay').classList.add('open');
+  root.querySelectorAll('.overlay, .overlay-backdrop').forEach(n=>{ n.getBoundingClientRect(); });
+  if(S.picker.open && !hadPicker) requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    document.getElementById('picker-overlay').classList.add('open');
+    document.getElementById('picker-backdrop').classList.add('open');
+  }));
+  else if(S.picker.open){
+    document.getElementById('picker-overlay').classList.add('open');
+    document.getElementById('picker-backdrop').classList.add('open');
+  }
 }
 
 /* ---------- boot ---------- */
