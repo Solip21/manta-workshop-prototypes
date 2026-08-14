@@ -211,7 +211,7 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 
 .scene-grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:16px;overflow-y:auto;align-content:start;}
 .scene-tile{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:1/1;background:var(--surface-container-highest);}
-.scene-tile img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
+.scene-tile img{width:100%;height:100%;object-fit:cover;display:block;}
 .scene-tile.selected{outline:2.5px solid var(--purple);outline-offset:-2.5px;}
 .scene-tile-check{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:999px;background:var(--purple);color:var(--text-primary);font:600 12px 'Poppins';display:flex;align-items:center;justify-content:center;}
 
@@ -307,10 +307,13 @@ function formatDate(d){ return MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' +
 
 // scene photos are full-screen phone screenshots (~0.46 aspect) — way too tall
 // to show natively inside a poll card, so crop to a square preview instead.
+// each photo has its own whitespace layout, so the vertical crop focus is tuned per image.
+const SCENE_FOCAL = { scene1: 'center 58%', scene2: 'center 42%', scene3: 'center 42%' };
+
 function highlightThumbHTML(highlight, extraClass){
   if(!highlight || !highlight.sceneKey) return '';
   return '<div class="poll-highlight ' + (extraClass||'') + '" style="aspect-ratio:1/1">' +
-    '<img src="' + IMG.scenes[highlight.sceneKey] + '" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;">' +
+    '<img src="' + IMG.scenes[highlight.sceneKey] + '" style="width:100%;height:100%;object-fit:cover;object-position:' + SCENE_FOCAL[highlight.sceneKey] + ';display:block;">' +
     '</div>';
 }
 
@@ -689,7 +692,7 @@ function pickerOverlayHTML(){
   const current = S.compose.highlight && S.compose.highlight.sceneKey;
   const tiles = SCENE_KEYS.map(key =>
     '<button class="scene-tile' + (key===current ? ' selected' : '') + '" onclick="selectScene(\'' + key + '\')">' +
-      '<img src="' + IMG.scenes[key] + '">' +
+      '<img src="' + IMG.scenes[key] + '" style="object-position:' + SCENE_FOCAL[key] + ';">' +
       (key===current ? '<span class="scene-tile-check">✓</span>' : '') +
     '</button>'
   ).join('');
