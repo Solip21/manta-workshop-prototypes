@@ -155,9 +155,10 @@ img{max-width:100%;}
 .poll-eyebrow-wrap{display:flex;flex-direction:column;gap:16px;}
 .poll-eyebrow{font:400 12px 'Poppins';color:var(--text-tertiary);}
 .poll-question{font:600 18px 'Poppins';color:var(--text-primary);line-height:1.3;}
-.poll-highlight-row{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.poll-highlight-row{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;touch-action:pan-x;scrollbar-width:none;margin-right:-16px;}
 .poll-highlight-row::-webkit-scrollbar{display:none;}
 .poll-highlight{position:relative;overflow:hidden;border-radius:12px;aspect-ratio:1/1;background:var(--surface-container-highest);flex:1 1 100%;scroll-snap-align:start;}
+.poll-highlight:last-child{margin-right:16px;}
 .poll-highlight.peek{flex:0 0 83%;}
 .poll-highlight img{position:absolute;left:0;top:0;width:100%;display:block;}
 .poll-options{display:flex;flex-direction:column;gap:8px;}
@@ -350,13 +351,15 @@ const SCENE_FOCAL = { scene1: 'center 58%', scene2: 'center 42%', scene3: 'cente
 // multiple highlights render as a horizontally swipeable row. When there's
 // more than one, tiles are sized to ~83% width so the next one peeks in at
 // the edge as a swipe hint; a single highlight just fills the row.
+function sceneImgHTML(key){
+  return '<img src="' + IMG.scenes[key] + '" style="width:100%;height:100%;object-fit:cover;object-position:' + SCENE_FOCAL[key] + ';display:block;">';
+}
+
 function highlightThumbHTML(highlights, extraClass){
   if(!highlights || !highlights.length) return '';
   const multi = highlights.length > 1;
   const tiles = highlights.map(key =>
-    '<div class="poll-highlight' + (multi ? ' peek' : '') + ' ' + (extraClass||'') + '">' +
-      '<img src="' + IMG.scenes[key] + '" style="width:100%;height:100%;object-fit:cover;object-position:' + SCENE_FOCAL[key] + ';display:block;">' +
-      '</div>'
+    '<div class="poll-highlight' + (multi ? ' peek' : '') + ' ' + (extraClass||'') + '">' + sceneImgHTML(key) + '</div>'
   ).join('');
   return '<div class="poll-highlight-row' + (multi ? '' : ' single') + '">' + tiles + '</div>';
 }
@@ -608,8 +611,13 @@ function openCompose(mode, pollId){
 
 function focusComposeQuestionIfNew(){
   if(S.compose.mode==='edit') return;
-  const el = document.querySelector('.q-field');
-  if(el) el.focus();
+  // wait for the push slide-in transition (.34s) to finish before focusing —
+  // focusing mid-transition pops the keyboard while the screen is still
+  // off-screen, causing a visible glitch at the bottom of the viewport.
+  setTimeout(()=>{
+    const el = document.querySelector('.q-field');
+    if(el) el.focus();
+  }, 360);
 }
 
 function updateQuestion(val){ S.compose.question = val; updatePostButton(); }
@@ -690,7 +698,7 @@ function composeBodyHTML(){
           ? '<button class="hl-empty" onclick="openPicker()"><span class="hl-empty-plus">+</span><span>Add a highlight moment</span></button>'
           : '<div class="hl-row">' +
               c.highlights.map(key =>
-                '<div class="hl-tile">' + highlightThumbHTML({sceneKey:key}) +
+                '<div class="hl-tile">' + sceneImgHTML(key) +
                   '<button class="hl-tile-remove" onclick="removeHighlight(\'' + key + '\')">✕</button>' +
                 '</div>'
               ).join('') +
@@ -737,26 +745,13 @@ function openPicker(){
 function closePickerOverlay(afterClose){
   const el = document.getElementById('picker-overlay');
   const backdrop = document.getElementById('picker-backdrop');
-  if(el){
-    el.classList.remove('open');
-    if(backdrop) backdrop.classList.remove('open');
-    let done = false;
-    const finish = ()=>{
-      if(done) return;
-      done = true;
-      S.picker.open = false;
-      afterClose && afterClose();
-      renderOverlays();
-    };
-    el.addEventListener('transitionend', finish, {once:true});
-    // fallback in case transitionend never fires (some mobile browsers skip it
-    // for elements removed from view, reduced-motion, or background tabs)
-    setTimeout(finish, 400);
-  } else {
+  if(el) el.classList.remove('open');
+  if(backdrop) backdrop.classList.remove('open');
+  setTimeout(()=>{
     S.picker.open = false;
     afterClose && afterClose();
     renderOverlays();
-  }
+  }, 300);
 }
 function closePicker(){ closePickerOverlay(); }
 
