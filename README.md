@@ -22,4 +22,4 @@ AI 워크샵에서 만든 클릭 가능한 프로토타입을 아카이브하고
 
 | 폴더 | 워크샵 | 관련 문서 |
 |---|---|---|
-| _(아직 없음)_ | | |
+| [`playground`](./playground) | Episode Interpretation Poll & Context Badge | [Poll One Pager](https://app.notion.com/p/ridi/One-Pager-3b12d79d7707809db6f2cbc896032d11), [Context Badge One Pager](https://app.notion.com/p/ridi/One-pager-3a52d79d77078063a164d6bd1179c950) |
