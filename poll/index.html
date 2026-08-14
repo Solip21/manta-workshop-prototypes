@@ -211,9 +211,10 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 .overlay-header .title{position:absolute;left:0;right:0;text-align:center;font:600 17px 'Poppins';color:var(--text-primary);}
 .overlay .body{flex:1;overflow-y:auto;padding:8px 16px 16px;}
 
-.compose-heading h1{margin:0 0 6px;font:600 22px 'Poppins';color:var(--text-primary);}
+.compose-heading{display:flex;flex-direction:column;gap:8px;}
+.compose-heading h1{margin:0;font:600 22px 'Poppins';color:var(--text-primary);}
 .compose-heading p{margin:0;font:400 12px 'Poppins';color:var(--text-tertiary);}
-.compose-block{margin-top:24px;display:flex;flex-direction:column;gap:8px;}
+.compose-block{display:flex;flex-direction:column;gap:8px;}
 
 .picker-panel{flex:1;display:flex;align-items:center;justify-content:center;padding:16px 24px;position:relative;overflow:hidden;}
 .picker-imgwrap{position:relative;touch-action:none;user-select:none;border-radius:12px;overflow:hidden;}
@@ -299,7 +300,7 @@ const S = {
 
   openMenuPollId:null,
 
-  compose:{open:false, mode:'new', pollId:null, question:'', options:['',''], highlight:null},
+  compose:{mode:'new', pollId:null, question:'', options:['',''], highlight:null},
   picker:{open:false, centerY:0.5, heightFraction:0.18, dragStartY:null, dragStartCenterY:null}
 };
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -467,6 +468,11 @@ function screens(entry){
         viewerBottomBarHTML(),
       onMount: renderPollList
     };
+    case 'pollCompose': return {
+      title:'', back:true,
+      body: composeBodyHTML(),
+      footer: composeFooterHTML()
+    };
   }
 }
 
@@ -548,33 +554,31 @@ function openCompose(mode, pollId){
     S.compose.options = ['',''];
     S.compose.highlight = null;
   }
-  S.compose.open = true;
-  renderOverlays();
-}
-
-function closeCompose(){
-  const el = document.getElementById('compose-overlay');
-  if(el){
-    el.classList.remove('open');
-    el.addEventListener('transitionend', ()=>{ S.compose.open = false; renderOverlays(); }, {once:true});
-  } else {
-    S.compose.open = false;
-    renderOverlays();
-  }
+  push('pollCompose');
 }
 
 function updateQuestion(val){ S.compose.question = val; updatePostButton(); }
 function updateOption(i, val){ S.compose.options[i] = val; updatePostButton(); }
 
+function rerenderCompose(){
+  const container = document.getElementById('screen-stack');
+  const node = container.lastElementChild;
+  if(!node) return;
+  const body = node.querySelector('.body');
+  if(body) body.innerHTML = composeBodyHTML();
+  const footer = node.querySelector('.footer');
+  if(footer) footer.innerHTML = composeFooterHTML();
+}
+
 function addOption(){
   if(S.compose.options.length>=4) return;
   S.compose.options.push('');
-  renderOverlays();
+  rerenderCompose();
 }
 function removeOption(i){
   if(S.compose.options.length<=2) return;
   S.compose.options.splice(i,1);
-  renderOverlays();
+  rerenderCompose();
 }
 
 function updatePostButton(){
@@ -585,7 +589,7 @@ function updatePostButton(){
   btn.disabled = !ok;
 }
 
-function removeHighlight(){ S.compose.highlight = null; renderOverlays(); }
+function removeHighlight(){ S.compose.highlight = null; rerenderCompose(); }
 
 function submitCompose(){
   if(!canPost()) return;
@@ -605,19 +609,18 @@ function submitCompose(){
       highlight, isMine:true, selected:null
     });
   }
-  closeCompose();
-  renderPollList();
-  const list = document.getElementById('poll-list');
-  if(list) list.scrollIntoView({block:'start'});
+  back();
+  const newId = S.compose.mode==='edit' ? S.compose.pollId : S.pollSummaries[0].id;
+  requestAnimationFrame(()=>{
+    const el = document.getElementById('poll-outer-' + newId);
+    if(el) el.scrollIntoView({block:'start'});
+  });
 }
 
-function composeOverlayHTML(){
+function composeBodyHTML(){
   const c = S.compose;
-  const isEditing = c.mode==='edit';
   return (
-    '<div class="overlay-grabber"><i></i></div>' +
-    '<div class="overlay-header"><button class="left" onclick="closeCompose()">Cancel</button></div>' +
-    '<div class="body">' +
+    '<div style="padding:16px;display:flex;flex-direction:column;gap:24px;">' +
       '<div class="compose-heading"><h1>Ask Readers</h1><p>Only readers who finished this episode can answer</p></div>' +
       '<div class="compose-block">' +
         '<div class="field-label">Question</div>' +
@@ -633,7 +636,7 @@ function composeOverlayHTML(){
         ) +
         '<div class="hl-caption">You can only pick a moment from this episode.</div>' +
       '</div>' +
-      '<div class="compose-block">' +
+      '<div class="compose-block" style="gap:12px;">' +
         '<div class="field-label">Answer options</div>' +
         '<div style="display:flex;flex-direction:column;gap:8px;">' +
           c.options.map((val,i)=>
@@ -645,9 +648,14 @@ function composeOverlayHTML(){
         '</div>' +
         (c.options.length<4 ? '<button class="add-option" onclick="addOption()"><span>+</span><span>Add option</span></button>' : '') +
       '</div>' +
-    '</div>' +
-    '<div class="post-btn-wrap"><button class="post-btn' + (canPost()?' enabled':'') + '" id="post-btn" ' + (canPost()?'':'disabled') + ' onclick="submitCompose()">' + (isEditing?'Save':'Post') + '</button></div>'
+    '</div>'
   );
+}
+
+function composeFooterHTML(){
+  const c = S.compose;
+  const isEditing = c.mode==='edit';
+  return '<div class="post-btn-wrap"><button class="post-btn' + (canPost()?' enabled':'') + '" id="post-btn" ' + (canPost()?'':'disabled') + ' onclick="submitCompose()">' + (isEditing?'Save':'Post') + '</button></div>';
 }
 
 function autoGrow(el){ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
@@ -675,7 +683,7 @@ function closePickerOverlay(afterClose){
 function closePicker(){ closePickerOverlay(); }
 function applyPicker(){
   const centerY = S.picker.centerY, heightFraction = S.picker.heightFraction;
-  closePickerOverlay(()=>{ S.compose.highlight = {centerY, heightFraction}; });
+  closePickerOverlay(()=>{ S.compose.highlight = {centerY, heightFraction}; rerenderCompose(); });
 }
 
 function pickerGeometry(){
@@ -745,19 +753,13 @@ function pickerOverlayHTML(){
 
 function renderOverlays(){
   const root = document.getElementById('overlay-root');
-  const hadCompose = !!document.getElementById('compose-overlay');
   const hadPicker = !!document.getElementById('picker-overlay');
   let html = '';
-  if(S.compose.open){
-    html += '<div class="overlay" id="compose-overlay">' + composeOverlayHTML() + '</div>';
-  }
   if(S.picker.open){
     html += '<div class="overlay" id="picker-overlay" style="z-index:50;">' + pickerOverlayHTML() + '</div>';
   }
   root.innerHTML = html;
   root.querySelectorAll('.overlay').forEach(n=>{ n.getBoundingClientRect(); });
-  if(S.compose.open && !hadCompose) requestAnimationFrame(()=>requestAnimationFrame(()=>document.getElementById('compose-overlay').classList.add('open')));
-  else if(S.compose.open) document.getElementById('compose-overlay').classList.add('open');
   if(S.picker.open && !hadPicker) requestAnimationFrame(()=>requestAnimationFrame(()=>document.getElementById('picker-overlay').classList.add('open')));
   else if(S.picker.open) document.getElementById('picker-overlay').classList.add('open');
 }
