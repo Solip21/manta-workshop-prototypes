@@ -48,21 +48,41 @@ img{max-width:100%;}
 
 .stage{display:flex;flex-direction:column;align-items:center;gap:18px;}
 
+.device-frame{
+  position:relative;
+  padding:12px;
+  background:linear-gradient(155deg,#5a5a5e 0%,#2c2c2e 18%,#1a1a1c 45%,#3a3a3d 75%,#0a0a0a 100%);
+  border-radius:62px;
+  box-shadow:0 40px 90px -25px rgba(0,0,0,.65), inset 0 0 0 1px rgba(255,255,255,.12), inset 0 1px 2px rgba(255,255,255,.25);
+}
 .device{
   position:relative;
   width:390px;
   height:844px;
-  max-height:calc(100dvh - 100px);
+  max-height:calc(100dvh - 124px);
   background:var(--surface-bottom);
-  border-radius:44px;
+  border-radius:50px;
   overflow:hidden;
-  box-shadow:0 40px 90px -25px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.07);
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.9);
   display:flex;
   flex-direction:column;
 }
+.dynamic-island{
+  position:absolute;top:12px;left:50%;transform:translateX(-50%);
+  width:120px;height:36px;background:#000;border-radius:20px;z-index:100;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
+}
+.side-btn{position:absolute;background:linear-gradient(180deg,#4a4a4d,#242426);}
+.side-btn-mute{left:-2px;top:135px;width:3px;height:30px;border-radius:2px 0 0 2px;}
+.side-btn-vol-up{left:-2px;top:185px;width:3px;height:58px;border-radius:2px 0 0 2px;}
+.side-btn-vol-down{left:-2px;top:250px;width:3px;height:58px;border-radius:2px 0 0 2px;}
+.side-btn-power{right:-2px;top:210px;width:3px;height:88px;border-radius:0 2px 2px 0;}
 @media (max-width:520px){
   body{padding:0;}
+  .device-frame{padding:0;border-radius:0;box-shadow:none;background:none;}
   .device{width:100vw;height:100dvh;max-height:none;border-radius:0;box-shadow:none;}
+  .dynamic-island{display:none;}
+  .side-btn{display:none;}
 }
 
 .statusbar{
@@ -227,19 +247,26 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 </head>
 <body>
 <div class="stage">
-  <div class="device" id="device">
-    <div class="statusbar">
-      <span>9:41</span>
-      <span class="icons">
-        <span class="sb-bars"><i></i><i></i><i></i><i></i></span>
-        <span class="sb-battery"><i></i></span>
-      </span>
+  <div class="device-frame">
+    <div class="dynamic-island"></div>
+    <div class="side-btn side-btn-mute"></div>
+    <div class="side-btn side-btn-vol-up"></div>
+    <div class="side-btn side-btn-vol-down"></div>
+    <div class="side-btn side-btn-power"></div>
+    <div class="device" id="device">
+      <div class="statusbar">
+        <span>9:41</span>
+        <span class="icons">
+          <span class="sb-bars"><i></i><i></i><i></i><i></i></span>
+          <span class="sb-battery"><i></i></span>
+        </span>
+      </div>
+      <div class="navbar" id="navbar"></div>
+      <div class="screen-stack" id="screen-stack"></div>
+      <div id="overlay-root"></div>
+      <div class="home-indicator"></div>
+      <div class="toast" id="toast"></div>
     </div>
-    <div class="navbar" id="navbar"></div>
-    <div class="screen-stack" id="screen-stack"></div>
-    <div id="overlay-root"></div>
-    <div class="home-indicator"></div>
-    <div class="toast" id="toast"></div>
   </div>
 </div>
 
