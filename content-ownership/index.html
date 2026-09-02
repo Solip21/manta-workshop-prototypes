@@ -333,6 +333,13 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 .co-bottom-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text-tertiary);}
 .co-bottom-tab span{font:400 10px 'Poppins';}
 .co-bottom-tab.active{color:var(--text-primary);}
+.co-cover-badges{position:absolute;top:4px;left:4px;display:flex;gap:3px;}
+.co-chip{background:rgba(0,0,0,.55);color:#fff;font:600 8px 'Poppins';padding:1px 4px;border-radius:3px;}
+.co-chip-n{background:#00A391;}
+.co-cover-ribbon{position:absolute;bottom:0;left:0;right:0;background:rgba(77,74,255,.85);color:#fff;font:600 9px 'Poppins';text-align:center;padding:2px 0;}
+.co-promo-banner{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 16px 8px;padding:10px 12px;border-radius:10px;background:linear-gradient(90deg,#4D4AFF,#a04ae5);}
+.co-promo-banner span{font:500 12px 'Poppins';color:#fff;line-height:1.3;}
+.co-promo-banner button{color:rgba(255,255,255,.85);font-size:16px;flex-shrink:0;}
 
 </style>
 
@@ -393,8 +400,15 @@ const S = {
   isFavorite: false,
   note: '',
   myTab: 'Favorite',
-  toastMsg: ''
+  toastMsg: '',
+  promoOpen: true
 };
+
+function dismissPromo(){
+  S.promoOpen = false;
+  const el = document.getElementById('promo-banner');
+  if(el) el.remove();
+}
 
 const OWNED_ROWS = [
   { title:'Under the Oak Tree', type:'Comic', owned:18, total:20, hue:'#4D4AFF' },
@@ -434,7 +448,19 @@ function progressBarHTML(owned, total){
 const HOME_GRID = [
   { title:'Under the Oak Tree', genre:'Romantasy', hue:'#7a4a3a', goto:'seriesHome' },
   { title:'High Society', genre:'Romantasy', hue:'#245c52', goto:null },
-  { title:'A Wicked Husband', genre:'Romantasy', hue:'#5a2436', goto:null }
+  { title:'A Wicked Husband', genre:'Romantasy', hue:'#5a2436', goto:null },
+  { title:'Obedient Pregnancy', genre:'Romance', hue:'#3a3a6b', goto:null },
+  { title:'Trash Will Always Be Trash', genre:'Romantasy', hue:'#5c3a5c', goto:null },
+  { title:'To Tread into Darkness', genre:'Romance', hue:'#2e4a3a', goto:null }
+];
+
+const HOME_GRID2 = [
+  { title:'Flower of Allure', genre:'Romance', hue:'#6b2e3a', goto:null },
+  { title:'A Butterfly Throughout', genre:'Romantasy', hue:'#3a5c6b', goto:null },
+  { title:'Transgression', genre:'Romance', hue:'#4a2e5c', goto:null },
+  { title:'Lift My Curse, Sir', genre:'Romantasy', hue:'#5c4a2e', goto:null },
+  { title:'Garden of May', genre:'Romantasy', hue:'#2e5c4a', goto:null },
+  { title:"Her Majesty's Night", genre:'Romantasy', hue:'#5c2e4a', goto:null }
 ];
 
 const FANDOM_CARDS = [
@@ -451,7 +477,11 @@ function gridCardHTML(item){
   const clickAttr = item.goto ? ' onclick="push(\'' + item.goto + '\')" style="cursor:pointer;"' : '';
   return (
     '<div class="co-grid-card"' + clickAttr + '>' +
-      coverPlaceholder(item.hue, '100%', '110px') +
+      '<div style="position:relative;">' +
+        coverPlaceholder(item.hue, '100%', '110px') +
+        '<div class="co-cover-badges"><span class="co-chip co-chip-n">N</span><span class="co-chip">FREE EPS</span></div>' +
+        '<div class="co-cover-ribbon">Unlimited</div>' +
+      '</div>' +
       '<div style="font:500 12px \'Poppins\';color:var(--text-primary);margin-top:6px;">' + item.title + '</div>' +
       '<div style="font:400 10px \'Poppins\';color:var(--text-tertiary);">' + item.genre + '</div>' +
     '</div>'
@@ -491,9 +521,12 @@ function screens(entry){
       body:
         '<div class="co-topnav">' +
           '<div class="co-topnav-tabs"><span class="active">COMIC</span><span>MANGA</span><span>NOVEL</span></div>' +
-          '<div class="co-topnav-icons">' + ICON_SEARCH + '<div style="width:24px;height:24px;border-radius:999px;background:var(--surface-container-highest);"></div></div>' +
+          '<div class="co-topnav-icons">' + ICON_SEARCH + '<div style="width:24px;height:24px;border-radius:999px;background:var(--surface-container-highest);"></div><div style="width:24px;height:24px;border-radius:999px;background:var(--surface-container-highest);"></div></div>' +
         '</div>' +
         '<div class="co-genre-row"><span>Genres</span><span>Daily</span><span>Completed</span><span>Trending</span></div>' +
+        (S.promoOpen ?
+          '<div class="co-promo-banner" id="promo-banner"><span>Popular titles, Free for a Month. Popular titles, Free for a Month.</span><button onclick="dismissPromo()">&#10005;</button></div>'
+          : '') +
         '<div style="position:relative;margin:0 16px 4px;border-radius:12px;overflow:hidden;">' +
           coverPlaceholder('#5a3a7a', '100%', '160px') +
           '<div style="position:absolute;left:16px;bottom:14px;right:16px;">' +
@@ -502,14 +535,14 @@ function screens(entry){
           '</div>' +
         '</div>' +
         '<div class="co-icon-row">' +
-          ['Promotion','Current reads','Unlimited','BL','New & Now'].map(l =>
+          ['Promotion','Current reads','Unlimited','BL','New & Now','Exclusive Series'].map(l =>
             '<div class="co-icon-shortcut"><div class="dot"></div><span>' + l + '</span></div>'
           ).join('') +
         '</div>' +
-        '<div class="co-section-title">For You</div>' +
         '<div class="co-grid">' + HOME_GRID.map(gridCardHTML).join('') + '</div>' +
         '<div class="co-section-title">Popular Fandom Boards</div>' +
         '<div class="co-fandom-row">' + FANDOM_CARDS.map(fandomCardHTML).join('') + '</div>' +
+        '<div class="co-grid">' + HOME_GRID2.map(gridCardHTML).join('') + '</div>' +
         '<div style="height:8px;"></div>',
       footer: bottomTabBarHTML()
     };
