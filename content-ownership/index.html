@@ -307,6 +307,33 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 .fav-card.open{opacity:1;transform:translateY(-50%) scale(1);}
 .fav-not-now{text-align:center;font:500 14px 'Poppins';color:var(--text-tertiary);padding:4px;}
 
+
+.co-topnav{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;}
+.co-topnav-tabs{display:flex;gap:14px;}
+.co-topnav-tabs span{font:600 15px 'Poppins';color:var(--text-placeholder);}
+.co-topnav-tabs span.active{color:var(--text-primary);}
+.co-topnav-icons{display:flex;gap:12px;color:var(--text-primary);}
+.co-genre-row{display:flex;gap:10px;padding:10px 16px;overflow-x:auto;}
+.co-genre-row span{font:500 13px 'Poppins';color:var(--text-secondary);white-space:nowrap;}
+.co-icon-row{display:flex;gap:18px;padding:16px;overflow-x:auto;}
+.co-icon-shortcut{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;}
+.co-icon-shortcut .dot{width:44px;height:44px;border-radius:999px;background:var(--surface-container-highest);}
+.co-icon-shortcut span{font:400 10px 'Poppins';color:var(--text-tertiary);white-space:nowrap;}
+.co-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 16px;}
+.co-grid-card{display:flex;flex-direction:column;}
+.co-section-title{font:600 18px 'Poppins';color:var(--text-primary);padding:24px 16px 12px;}
+.co-fandom-row{display:flex;gap:12px;padding:0 16px 16px;overflow-x:auto;}
+.co-fandom-card{
+  position:relative;flex:0 0 172px;border-radius:20px;padding:46px 16px 16px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;overflow:visible;
+}
+.co-fandom-avatar{position:absolute;top:-36px;left:50%;transform:translateX(-50%);width:72px;height:72px;border-radius:999px;border:3px solid rgba(255,255,255,.15);}
+.co-join-btn{margin-top:6px;background:#fff;color:#14171c;font:600 13px 'Poppins';padding:8px 24px;border-radius:999px;}
+.co-bottom-tabbar{display:flex;background:var(--surface-bottom);border-top:1px solid var(--border-mute);padding:8px 0 6px;}
+.co-bottom-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text-tertiary);}
+.co-bottom-tab span{font:400 10px 'Poppins';}
+.co-bottom-tab.active{color:var(--text-primary);}
+
 </style>
 
 </head>
@@ -401,10 +428,91 @@ function progressBarHTML(owned, total){
 
 /* ---------- screens ---------- */
 
-const stack = [{id:'seriesHome'}];
+
+/* ---------- Home screen data ---------- */
+
+const HOME_GRID = [
+  { title:'Under the Oak Tree', genre:'Romantasy', hue:'#7a4a3a', goto:'seriesHome' },
+  { title:'High Society', genre:'Romantasy', hue:'#245c52', goto:null },
+  { title:'A Wicked Husband', genre:'Romantasy', hue:'#5a2436', goto:null }
+];
+
+const FANDOM_CARDS = [
+  { title:'Under the Oak Tree', desc:"Obsessed with reincarnation plots? You'll fit right in.", hue:'#4D4AFF', avatarHue:'#caa24a' },
+  { title:'High Society', desc:"For those who'd rather be the villainess.", hue:'#1f6f60', avatarHue:'#5aa9d6' }
+];
+
+const ICON_HOME = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9Z" fill="currentColor"/></svg>';
+const ICON_SEARCH = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M20 20l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+const ICON_OFFER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="12" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M4 8l3-4h10l3 4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const ICON_BOOKSHELF = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M4 9h16" stroke="currentColor" stroke-width="1.8"/></svg>';
+
+function gridCardHTML(item){
+  const clickAttr = item.goto ? ' onclick="push(\'' + item.goto + '\')" style="cursor:pointer;"' : '';
+  return (
+    '<div class="co-grid-card"' + clickAttr + '>' +
+      coverPlaceholder(item.hue, '100%', '110px') +
+      '<div style="font:500 12px \'Poppins\';color:var(--text-primary);margin-top:6px;">' + item.title + '</div>' +
+      '<div style="font:400 10px \'Poppins\';color:var(--text-tertiary);">' + item.genre + '</div>' +
+    '</div>'
+  );
+}
+
+function fandomCardHTML(c){
+  return (
+    '<div class="co-fandom-card" style="background:' + c.hue + ';">' +
+      '<div class="co-fandom-avatar" style="background:' + c.avatarHue + ';"></div>' +
+      '<div style="font:600 15px \'Poppins\';color:#fff;text-align:center;">' + c.title + '</div>' +
+      '<div style="font:400 12px \'Poppins\';color:rgba(255,255,255,.85);text-align:center;line-height:1.35;">' + c.desc + '</div>' +
+      '<button class="co-join-btn">Join</button>' +
+    '</div>'
+  );
+}
+
+function bottomTabBarHTML(){
+  return (
+    '<div class="co-bottom-tabbar">' +
+      '<div class="co-bottom-tab active">' + ICON_HOME + '<span>Home</span></div>' +
+      '<div class="co-bottom-tab">' + ICON_SEARCH + '<span>Search</span></div>' +
+      '<div class="co-bottom-tab">' + ICON_OFFER + '<span>Today\'s offer</span></div>' +
+      '<div class="co-bottom-tab" onclick="push(\'mySeries\')">' + ICON_BOOKSHELF + '<span>My series</span></div>' +
+    '</div>'
+  );
+}
+
+
+const stack = [{id:'home'}];
 
 function screens(entry){
   switch(entry.id){
+
+    case 'home': return {
+      title:'', back:false,
+      body:
+        '<div class="co-topnav">' +
+          '<div class="co-topnav-tabs"><span class="active">COMIC</span><span>MANGA</span><span>NOVEL</span></div>' +
+          '<div class="co-topnav-icons">' + ICON_SEARCH + '<div style="width:24px;height:24px;border-radius:999px;background:var(--surface-container-highest);"></div></div>' +
+        '</div>' +
+        '<div class="co-genre-row"><span>Genres</span><span>Daily</span><span>Completed</span><span>Trending</span></div>' +
+        '<div style="position:relative;margin:0 16px 4px;border-radius:12px;overflow:hidden;">' +
+          coverPlaceholder('#5a3a7a', '100%', '160px') +
+          '<div style="position:absolute;left:16px;bottom:14px;right:16px;">' +
+            '<div style="font:600 16px \'Poppins\';color:#fff;">Follow Along - Wednesday</div>' +
+            '<div style="font:400 12px \'Poppins\';color:rgba(255,255,255,.8);">Yuji Itadori is a high school student with...</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="co-icon-row">' +
+          ['Promotion','Current reads','Unlimited','BL','New & Now'].map(l =>
+            '<div class="co-icon-shortcut"><div class="dot"></div><span>' + l + '</span></div>'
+          ).join('') +
+        '</div>' +
+        '<div class="co-section-title">For You</div>' +
+        '<div class="co-grid">' + HOME_GRID.map(gridCardHTML).join('') + '</div>' +
+        '<div class="co-section-title">Popular Fandom Boards</div>' +
+        '<div class="co-fandom-row">' + FANDOM_CARDS.map(fandomCardHTML).join('') + '</div>' +
+        '<div style="height:8px;"></div>',
+      footer: bottomTabBarHTML()
+    };
 
     case 'seriesHome': return {
       title:'', back:false,
