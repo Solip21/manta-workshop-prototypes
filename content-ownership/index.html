@@ -300,6 +300,8 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 .co-badge svg{flex-shrink:0;}
 .co-tab{padding:0 0 10px;font:500 14px 'Poppins';color:var(--text-tertiary);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;}
 .co-tab.active{color:var(--text-primary);border-bottom-color:var(--purple);}
+.co-typefilter{font:400 13px 'Poppins';color:var(--text-placeholder);cursor:pointer;white-space:nowrap;}
+.co-typefilter.active{color:var(--text-primary);}
 .co-progress-track{width:100%;height:4px;border-radius:2px;background:var(--surface-container-highest);overflow:hidden;}
 .co-progress-fill{height:100%;background:var(--purple);border-radius:2px;}
 .co-addnote-header{flex-shrink:0;height:44px;position:relative;display:flex;align-items:center;gap:12px;padding:0 16px;}
@@ -451,6 +453,7 @@ const S = {
   isFavorite: false,
   note: '',
   myTab: 'Favorite',
+  myTypeFilter: 'All',
   toastMsg: '',
   promoOpen: true,
   shareToFandom: false
@@ -486,8 +489,8 @@ function progressBarHTML(owned, total){
   const pct = Math.max(4, Math.round((owned/total)*100));
   return (
     '<div style="display:flex;flex-direction:column;gap:4px;width:100%;">' +
+      '<div style="font:400 10px \'Poppins\';color:var(--text-placeholder);">' + owned + '/' + total + '</div>' +
       '<div class="co-progress-track"><div class="co-progress-fill" style="width:' + pct + '%;"></div></div>' +
-      '<div style="font:400 12px \'Poppins\';color:var(--text-tertiary);">' + owned + '/' + total + '</div>' +
     '</div>'
   );
 }
@@ -702,6 +705,12 @@ function screens(entry){
         '<div style="display:flex;gap:16px;padding:12px 16px 0;border-bottom:1px solid var(--border-mute);">' +
           MY_TABS.map(t => '<div class="co-tab' + (t===S.myTab?' active':'') + '" onclick="setMyTab(\'' + t + '\')">' + t + '</div>').join('') +
         '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;padding:12px 16px;">' +
+          ['All','Comic','Manga','Novel'].map((t, i) =>
+            (i>0 ? ICON_BAR12 : '') +
+            '<div class="co-typefilter' + (t===S.myTypeFilter?' active':'') + '" onclick="setMyTypeFilter(\'' + t + '\')">' + t + '</div>'
+          ).join('') +
+        '</div>' +
         '<div id="my-series-list" style="padding:8px 0;">' + myOwnedRowsHTML() + '</div>'
     };
 
@@ -811,12 +820,13 @@ function myOwnedRowsHTML(){
   if(S.myTab !== 'Favorite' && S.myTab !== 'Saved') {
     return '<div style="padding:60px 16px;text-align:center;font:400 13px \'Poppins\';color:var(--text-tertiary);">Nothing here yet.</div>';
   }
-  return OWNED_ROWS.map(r =>
+  const rows = S.myTypeFilter === 'All' ? OWNED_ROWS : OWNED_ROWS.filter(r => r.type === S.myTypeFilter);
+  return rows.map(r =>
     '<div style="display:flex;gap:12px;padding:8px 16px;' + (r.goto ? 'cursor:pointer;' : '') + '"' + (r.goto ? ' onclick="push(\'' + r.goto + '\')"' : '') + '>' +
-      (r.img ? '<img src="' + IMG_MAP[r.img] + '" style="width:60px;height:86px;border-radius:6px;object-fit:cover;flex-shrink:0;">' : coverPlaceholder(r.hue, '60px', '86px')) +
+      (r.img ? '<img src="' + IMG_MAP[r.img] + '" style="width:64px;height:86px;border-radius:3px;object-fit:cover;flex-shrink:0;">' : coverPlaceholder(r.hue, '64px', '86px')) +
       '<div style="flex:1;display:flex;flex-direction:column;gap:2px;padding:12px 0;">' +
         '<div style="font:500 14px \'Poppins\';color:var(--text-primary);">' + r.title + '</div>' +
-        '<div style="font:400 10px \'Poppins\';color:var(--text-tertiary);margin-bottom:6px;">' + r.type + '</div>' +
+        '<div style="font:400 10px \'Poppins\';color:var(--text-tertiary);margin-bottom:16px;">' + r.type + '</div>' +
         progressBarHTML(r.owned, r.total) +
       '</div>' +
     '</div>'
@@ -850,6 +860,15 @@ function setMyTab(tab){
   if(list) list.innerHTML = myOwnedRowsHTML();
   document.querySelectorAll('.co-tab').forEach(el=>{
     el.classList.toggle('active', el.textContent===tab);
+  });
+}
+
+function setMyTypeFilter(type){
+  S.myTypeFilter = type;
+  const list = document.getElementById('my-series-list');
+  if(list) list.innerHTML = myOwnedRowsHTML();
+  document.querySelectorAll('.co-typefilter').forEach(el=>{
+    el.classList.toggle('active', el.textContent===type);
   });
 }
 
