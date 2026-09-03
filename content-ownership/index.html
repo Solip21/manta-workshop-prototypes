@@ -480,6 +480,11 @@ const OWNED_ROWS = [
 
 const MY_TABS = ['Saved','Current reads','Favorite','Unlocked','Notification'];
 
+const LIFE_SERIES_CARDS = [
+  { title:'Under the Oak Tree', meta:'3 highlights &middot; 1 comment saved', privacy:'Only visible to you', img:'IMG_COVER_OAKTREE', goto:'cardDetail' },
+  { title:'High Society', meta:'5 highlights saved', privacy:'Shared to Fandom Board', img:'IMG_COVER_HIGHSOCIETY' }
+];
+
 const FANDOM_POSTS = [
   { type:'highlight', name:'solip_leaf', badge:'favorite', time:'2h ago', images:[IMG_FB_HLTILE1, IMG_FB_HLTILE2, IMG_FB_HLTILE3], moreCount:2, text:'Got chills seeing this... so this was foreshadowed since ep. 3', likes:128 },
   { type:'free', name:'mangalover99', badge:null, time:'5h ago', text:"Did NOT see that ending coming... when's the next episode??", likes:42 },
@@ -833,7 +838,19 @@ function episodeRowHTML(title, date){
 }
 
 function myOwnedRowsHTML(){
-  if(S.myTab !== 'Favorite' && S.myTab !== 'Saved') {
+  if(S.myTab === 'Favorite'){
+    return LIFE_SERIES_CARDS.map(c =>
+      '<div style="display:flex;gap:12px;padding:8px 16px;' + (c.goto ? 'cursor:pointer;' : '') + '"' + (c.goto ? ' onclick="push(\'' + c.goto + '\')"' : '') + '>' +
+        '<img src="' + IMG_MAP[c.img] + '" style="width:64px;height:88px;border-radius:8px;object-fit:cover;flex-shrink:0;">' +
+        '<div style="flex:1;display:flex;flex-direction:column;gap:6px;">' +
+          '<div style="font:600 14px \'Poppins\';color:var(--text-primary);">' + c.title + '</div>' +
+          '<div style="font:400 10px \'Poppins\';color:var(--text-tertiary);">' + c.meta + '</div>' +
+          '<div style="font:400 10px \'Poppins\';color:var(--text-secondary);">' + c.privacy + '</div>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+  }
+  if(S.myTab !== 'Saved') {
     return '<div style="padding:60px 16px;text-align:center;font:400 13px \'Poppins\';color:var(--text-tertiary);">Nothing here yet.</div>';
   }
   const rows = S.myTypeFilter === 'All' ? OWNED_ROWS : OWNED_ROWS.filter(r => r.type === S.myTypeFilter);
@@ -893,7 +910,6 @@ function fandomPostHTML(p){
 
 function setMyTab(tab){
   if(tab === 'Unlocked'){ push('seriesHome'); return; }
-  if(tab === 'Favorite'){ push('cardDetail'); return; }
   S.myTab = tab;
   const list = document.getElementById('my-series-list');
   if(list) list.innerHTML = myOwnedRowsHTML();
