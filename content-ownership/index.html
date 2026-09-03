@@ -284,6 +284,16 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 .co-func-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--text-primary);border-radius:999px;}
 .co-func-btn.active{background:#4D4AFF;}
 .co-fandom-entry{display:flex;align-items:center;gap:12px;width:100%;background:var(--surface-container);border-radius:12px;padding:14px 16px;text-align:left;color:var(--text-primary);}
+.co-nav-circle{width:40px;height:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.co-agerating-badge{background:rgba(28,29,33,.7);border:0.5px solid rgba(255,255,255,.2);border-radius:3px;height:14px;display:inline-flex;align-items:center;padding:0 4px;font:600 9px 'Poppins';color:#E9E9EB;text-transform:uppercase;letter-spacing:-.09px;}
+.co-thumb-btn{width:30px;height:30px;border-radius:999px;background:rgba(56,56,56,.3);border:1px solid var(--surface-container-highest);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.co-episode-tabs{display:flex;border-bottom:1px solid var(--border-mute);}
+.co-episode-tab{flex:1;text-align:center;padding:6px 0 7px;font:500 16px 'Poppins';color:var(--text-placeholder);position:relative;}
+.co-episode-tab.active{color:var(--text-primary);}
+.co-episode-tab.active span{font:600 14px 'Poppins';color:var(--purple);margin-left:4px;}
+.co-episode-tab.active::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--purple);border-radius:2px;}
+.co-unlockall-btn{background:var(--surface-container-highest);border-radius:6px;height:28px;padding:0 16px;font:600 12px 'Poppins';color:var(--text-primary);}
+.co-sort-btn{display:flex;align-items:center;gap:4px;height:24px;padding:0 4px;border-radius:6px;font:400 12px 'Poppins';color:var(--text-primary);}
 .co-badge{display:inline-flex;align-items:center;gap:3px;padding:0 5px 0 3px;height:14px;border-radius:3px;font:500 9px 'Poppins';color:#fff;white-space:nowrap;}
 .co-badge svg{flex-shrink:0;}
 .co-tab{padding:0 0 10px;font:500 14px 'Poppins';color:var(--text-tertiary);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;}
@@ -325,7 +335,7 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 .co-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 16px;}
 .co-grid-card{display:flex;flex-direction:column;}
 .co-section-title{font:600 18px 'Poppins';color:var(--text-primary);padding:24px 16px 12px;}
-.co-fandom-row{display:flex;align-items:flex-start;gap:12px;padding:48px 16px 16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:16px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.co-fandom-row{display:flex;align-items:center;gap:12px;padding:48px 16px 16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:16px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .co-fandom-row::-webkit-scrollbar{display:none;}
 .co-fandom-card{
   position:relative;flex:0 0 172px;border-radius:20px;padding:46px 16px 16px;
@@ -523,6 +533,15 @@ const FANDOM_CARDS = [
   { title:'A Wicked Husband', desc:"Swoon-worthy panels, shared daily.", hue:'#7a3b2e', img:'IMG_COVER_WICKEDHUSBAND' }
 ];
 
+const ICON_NAV_BACK = '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block;"><path d="M19.207 4.70703L9.91406 14L19.207 23.293L17.793 24.707L7.79297 14.707C7.40245 14.3165 7.40245 13.6835 7.79297 13.293L17.793 3.29297L19.207 4.70703Z" fill="#EDF0F7"/></svg>';
+const ICON_NAV_LINK = '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block;"><path d="M11.75 5.75H8.75C8.03347 5.75 7.55616 5.75031 7.18945 5.78027C6.83489 5.80924 6.67228 5.86072 6.56933 5.91308C6.28709 6.05689 6.05689 6.28709 5.91308 6.56933C5.86072 6.67228 5.80924 6.83489 5.78027 7.18945C5.75031 7.55616 5.75 8.03347 5.75 8.75V19.25C5.75 19.9665 5.75031 20.4438 5.78027 20.8105C5.80924 21.1651 5.86072 21.3277 5.91308 21.4307C6.05689 21.7129 6.28709 21.9431 6.56933 22.0869C6.67228 22.1393 6.83489 22.1908 7.18945 22.2197C7.55616 22.2497 8.03347 22.25 8.75 22.25H19.25C19.9665 22.25 20.4438 22.2497 20.8105 22.2197C21.1651 22.1908 21.3277 22.1393 21.4307 22.0869C21.7129 21.9431 21.9431 21.7129 22.0869 21.4307C22.1393 21.3277 22.1908 21.1651 22.2197 20.8105C22.2497 20.4438 22.25 19.9665 22.25 19.25V15.75H24.25V19.25C24.25 19.9336 24.251 20.5066 24.2129 20.9736C24.1738 21.4523 24.0882 21.9071 23.8682 22.3389C23.5326 22.9974 22.9974 23.5326 22.3389 23.8682C21.9071 24.0882 21.4523 24.1738 20.9736 24.2129C20.5066 24.251 19.9336 24.25 19.25 24.25H8.75C8.06643 24.25 7.49341 24.251 7.02636 24.2129C6.54771 24.1738 6.09293 24.0882 5.66113 23.8682C5.00262 23.5326 4.46738 22.9974 4.13183 22.3389C3.91182 21.9071 3.82623 21.4523 3.78711 20.9736C3.74895 20.5066 3.75 19.9336 3.75 19.25V8.75C3.75 8.06643 3.74895 7.49341 3.78711 7.02636C3.82623 6.54771 3.91182 6.09293 4.13183 5.66113C4.46738 5.00262 5.00262 4.46738 5.66113 4.13183C6.09293 3.91182 6.54771 3.82623 7.02636 3.78711C7.49341 3.74895 8.06643 3.75 8.75 3.75H11.75V5.75Z" fill="white"/><path d="M23.25 3.75C23.8023 3.75 24.25 4.19771 24.25 4.75V12.25H22.25V7.16406L12.707 16.707L11.293 15.293L20.8359 5.75H15.75V3.75H23.25Z" fill="white"/></svg>';
+const ICON_THUMB_UP = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:block;"><path d="M3.66667 5.66679C4.21895 5.66679 4.66667 6.1145 4.66667 6.66679V12.6668C4.6666 13.219 4.21891 13.6668 3.66667 13.6668H3.33333C2.78109 13.6668 2.3334 13.219 2.33333 12.6668V6.66679C2.33333 6.1145 2.78105 5.66679 3.33333 5.66679H3.66667Z" fill="#EDF0F7"/><path d="M7.92904 2.53983C8.56386 1.71791 9.78499 1.66346 10.4909 2.42525C10.9539 2.92498 11.0695 3.65475 10.7832 4.27291L10.2318 5.46236H12.0983C13.1485 5.46236 14 6.31385 14 7.36405C14 7.50867 13.9832 7.65287 13.9505 7.79374L12.8268 12.6349C12.6866 13.2389 12.1487 13.6666 11.5286 13.6668H6.66667C5.93033 13.6668 5.3334 13.0698 5.33333 12.3335V6.35689C5.33333 6.06205 5.43116 5.77518 5.61133 5.54179L7.92904 2.53983Z" fill="#EDF0F7"/></svg>';
+const ICON_THUMB_DOWN = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:block;"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.95768 13.4603C7.32286 14.2822 6.10173 14.3367 5.39583 13.5749C4.93284 13.0751 4.81722 12.3454 5.10352 11.7272L5.65495 10.5378L3.78841 10.5378C2.7382 10.5378 1.88672 9.68627 1.88672 8.63607C1.88673 8.49145 1.90352 8.34725 1.9362 8.20638L3.0599 3.36523C3.20016 2.76124 3.73802 2.33348 4.35807 2.33333L12.2201 2.33333C12.9564 2.33333 13.5533 2.93034 13.5534 3.66667L13.5534 9C13.5534 9.73638 12.9564 10.3333 12.2201 10.3333L10.36 10.3333C10.3341 10.3763 10.3063 10.4183 10.2754 10.4583L7.95768 13.4603ZM12.2201 9L12.2201 3.66667L10.5534 3.66667L10.5534 9L12.2201 9ZM6.3737 12.6686C6.51934 12.8258 6.77136 12.8148 6.90234 12.6452L9.22005 9.64323L9.22005 3.66667L4.35807 3.66667L3.23503 8.50781C3.22528 8.54985 3.22006 8.59292 3.22005 8.63607C3.22006 8.9499 3.47458 9.20443 3.78841 9.20443L5.65495 9.20443C6.62867 9.20461 7.27387 10.2147 6.86458 11.0983L6.31315 12.2878C6.25426 12.4152 6.27835 12.5656 6.3737 12.6686Z" fill="#999CA8"/></svg>';
+const ICON_FUNC_DOWNLOAD = '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block;"><path d="M24 24H4V22H24V24Z" fill="#EDF0F7"/><path d="M15 17.8193L22.333 11.2549L23.667 12.7451L14.7305 20.7451C14.3528 21.0832 13.7814 21.0853 13.4014 20.75L4.33789 12.75L5.66211 11.25L13 17.7275V4H15V17.8193Z" fill="#EDF0F7"/></svg>';
+const ICON_FUNC_BELL = '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block;"><path d="M18 25H10V23H18V25Z" fill="#EDF0F7"/><path fill-rule="evenodd" clip-rule="evenodd" d="M14 3.5C18.4183 3.5 22 7.08172 22 11.5V19H24V21H4V19H6V11.5C6 7.08172 9.58172 3.5 14 3.5ZM14 5.5C10.6863 5.5 8 8.18629 8 11.5V19H20V11.5C20 8.18629 17.3137 5.5 14 5.5Z" fill="#EDF0F7"/></svg>';
+const ICON_FUNC_PLUS = '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block;"><path d="M15 13H24.25V15H15V24.25H13V15H3.75V13H13V3.75H15V13Z" fill="#EDF0F7"/></svg>';
+const ICON_FUNC_IMAGEBOX = '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block;"><path d="M22 25H6V23H22V25Z" fill="#EDF0F7"/><path d="M10.25 8.25C11.3546 8.25 12.25 9.14543 12.25 10.25C12.25 11.3546 11.3546 12.25 10.25 12.25C9.14543 12.25 8.25 11.3546 8.25 10.25C8.25 9.14543 9.14543 8.25 10.25 8.25Z" fill="#EDF0F7"/><path fill-rule="evenodd" clip-rule="evenodd" d="M20.0498 3.75C20.5933 3.75 21.0616 3.74892 21.4453 3.78027C21.8406 3.81258 22.234 3.8844 22.6123 4.07714C23.1765 4.36472 23.6353 4.82347 23.9228 5.38769C24.1156 5.76598 24.1874 6.15943 24.2197 6.55468C24.2511 6.93835 24.25 7.40664 24.25 7.95019V18.6504C24.25 18.9138 24.2511 19.1719 24.2334 19.3887C24.2147 19.6172 24.1704 19.8869 24.0322 20.1582C23.8405 20.5345 23.5345 20.8405 23.1582 21.0322C22.8869 21.1704 22.6172 21.2147 22.3887 21.2334C22.1719 21.2511 21.9138 21.25 21.6504 21.25H7.95019C7.40664 21.25 6.93835 21.2511 6.55468 21.2197C6.15943 21.1874 5.76598 21.1156 5.38769 20.9228C4.82347 20.6353 4.36472 20.1765 4.07714 19.6123C3.8844 19.234 3.81258 18.8406 3.78027 18.4453C3.74892 18.0616 3.75 17.5933 3.75 17.0498V7.95019C3.75 7.40664 3.74892 6.93835 3.78027 6.55468C3.81258 6.15943 3.88439 5.76599 4.07714 5.38769C4.36472 4.82347 4.82347 4.36472 5.38769 4.07714C5.76599 3.88439 6.15943 3.81258 6.55468 3.78027C6.93835 3.74892 7.40664 3.75 7.95019 3.75H20.0498ZM22.25 14.0107C14.7132 14.1986 9.84433 17.1845 7.3164 19.2461C7.49665 19.2481 7.70495 19.25 7.95019 19.25H21.6504C21.9467 19.25 22.109 19.2488 22.2256 19.2393C22.2297 19.2389 22.2336 19.2376 22.2373 19.2373C22.2376 19.2336 22.2389 19.2297 22.2393 19.2256C22.2488 19.109 22.25 18.9467 22.25 18.6504V14.0107ZM7.95019 5.75C7.37364 5.75 7.0011 5.75126 6.71777 5.77441C6.44619 5.79661 6.34533 5.83418 6.29589 5.85937C6.10793 5.95521 5.95521 6.10793 5.85937 6.29589C5.83418 6.34533 5.79661 6.44619 5.77441 6.71777C5.75126 7.0011 5.75 7.37364 5.75 7.95019V17.0498C5.75 17.4211 5.75125 17.7077 5.75781 17.9404C8.44046 15.6779 13.8188 12.2052 22.25 12.0088V7.95019C22.25 7.37364 22.2487 7.0011 22.2256 6.71777C22.2034 6.44619 22.1658 6.34533 22.1406 6.29589C22.0448 6.10793 21.8921 5.95521 21.7041 5.85937C21.6547 5.83418 21.5538 5.7966 21.2822 5.77441C20.9989 5.75126 20.6263 5.75 20.0498 5.75H7.95019Z" fill="#EDF0F7"/></svg>';
+const ICON_SORT_CHEVRON = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:block;"><path d="M7.46973 12.5303L3.46973 8.53027C3.32907 8.38962 3.25 8.19891 3.25 8C3.25 7.80109 3.32907 7.61038 3.46973 7.46973L7.46973 3.46973L8.53027 4.53027L5.06055 8L8.53027 11.4697L7.46973 12.5303Z" fill="#EDF0F7"/></svg>';
 const ICON_HOME = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9Z" fill="currentColor"/></svg>';
 const ICON_SEARCH = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M20 20l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 const ICON_OFFER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="12" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M4 8l3-4h10l3 4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
@@ -608,21 +627,34 @@ function screens(entry){
     case 'seriesHome': return {
       title:'', back:false,
       navExtra:
-        '<button class="nav-mytab" onclick="push(\'mySeries\')">My Series</button>',
+        '<button class="nav-mytab" onclick="push(\'mySeries\')">' + ICON_NAV_LINK.replace('width="28" height="28"', 'width="20" height="20"') + '</button>',
       body:
         '<div style="position:relative;">' +
           '<img src="' + IMG_COVER_OAKTREE + '" style="width:100%;height:260px;object-fit:cover;display:block;">' +
           '<div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.85),rgba(0,0,0,.1) 55%,rgba(0,0,0,.35));"></div>' +
           '<div style="position:absolute;left:16px;bottom:16px;right:16px;">' +
-            '<div style="font:400 12px \'Poppins\';color:var(--text-secondary);margin-bottom:4px;">17+ &middot; Romantasy &middot; BL</div>' +
-            '<div style="font:600 24px \'Poppins\';color:var(--text-primary);">' + S.seriesTitle + '</div>' +
+            '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">' +
+              '<span class="co-agerating-badge">17+</span>' +
+              '<span style="font:400 12px \'Poppins\';color:var(--text-primary);">Romantasy</span>' +
+              '<span style="width:3px;height:3px;border-radius:999px;background:var(--text-tertiary);flex-shrink:0;"></span>' +
+              '<span style="font:400 12px \'Poppins\';color:var(--text-primary);">BL</span>' +
+            '</div>' +
+            '<div style="display:flex;align-items:flex-end;gap:8px;">' +
+              '<div style="font:600 24px \'Poppins\';color:var(--text-primary);flex:1;">' + S.seriesTitle + '</div>' +
+              '<div style="display:flex;gap:6px;">' +
+                '<button class="co-thumb-btn">' + ICON_THUMB_UP + '</button>' +
+                '<button class="co-thumb-btn">' + ICON_THUMB_DOWN + '</button>' +
+              '</div>' +
+            '</div>' +
             '<div style="font:400 12px \'Poppins\';color:var(--text-tertiary);margin-top:4px;">By KIMPA, Manta Comics</div>' +
           '</div>' +
         '</div>' +
         '<div style="padding:16px;display:flex;flex-direction:column;gap:20px;">' +
           '<div style="display:flex;gap:24px;align-items:center;">' +
-            '<button class="co-func-btn' + (S.isFavorite ? ' active' : '') + '" onclick="openFavoritePrompt()">' + ICON_PLUS + '</button>' +
-            '<button class="co-func-btn">' + ICON_BELL + '</button>' +
+            '<button class="co-func-btn' + (S.isFavorite ? ' active' : '') + '" onclick="openFavoritePrompt()">' + ICON_FUNC_PLUS + '</button>' +
+            '<button class="co-func-btn">' + ICON_FUNC_BELL + '</button>' +
+            '<button class="co-func-btn">' + ICON_FUNC_DOWNLOAD + '</button>' +
+            '<button class="co-func-btn">' + ICON_FUNC_IMAGEBOX + '</button>' +
           '</div>' +
           '<button class="co-fandom-entry" onclick="push(\'fandomBoard\')">' +
             '<div style="width:20px;height:20px;border-radius:999px;background:#4D4AFF;flex-shrink:0;"></div>' +
@@ -632,11 +664,19 @@ function screens(entry){
             '</div>' +
             ICON_CHEVRON_RIGHT +
           '</button>' +
-          '<div style="display:flex;flex-direction:column;">' +
-            episodeRowHTML('Episode 1','Jun 21, 2022') +
-            episodeRowHTML('Episode 2','Jun 21, 2022') +
-            episodeRowHTML('Episode 3','Jun 21, 2022') +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;">' +
+          '<div class="co-episode-tabs">' +
+            '<div class="co-episode-tab">Sneak peek</div>' +
+            '<div class="co-episode-tab active">Episodes <span>18</span></div>' +
           '</div>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;padding:0 16px 12px;">' +
+            '<button class="co-unlockall-btn">Unlock all</button>' +
+            '<button class="co-sort-btn">' + ICON_SORT_CHEVRON + '<span>Sort</span></button>' +
+          '</div>' +
+          episodeRowHTML('Episode 1','Jun 21, 2022') +
+          episodeRowHTML('Episode 2','Jun 21, 2022') +
+          episodeRowHTML('Episode 3','Jun 21, 2022') +
         '</div>'
     };
 
