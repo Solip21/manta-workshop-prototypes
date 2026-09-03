@@ -686,11 +686,7 @@ function screens(entry){
           '</button>' +
         '</div>' +
         '<div style="display:flex;flex-direction:column;">' +
-          '<div class="co-episode-tabs">' +
-            '<div class="co-episode-tab">Sneak peek</div>' +
-            '<div class="co-episode-tab active">Episodes <span>18</span></div>' +
-          '</div>' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;padding:0 16px 12px;">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px;">' +
             '<button class="co-unlockall-btn">Unlock all</button>' +
             '<button class="co-sort-btn">' + ICON_SORT_CHEVRON + '<span>Sort</span></button>' +
           '</div>' +
@@ -801,7 +797,7 @@ function screens(entry){
 
 function episodeRowHTML(title, date){
   return (
-    '<div style="display:flex;align-items:center;gap:12px;padding:8px 0;">' +
+    '<div style="display:flex;align-items:center;gap:12px;padding:8px 16px;">' +
       coverPlaceholder('#40424d', '80px', '80px') +
       '<div style="display:flex;flex-direction:column;gap:4px;">' +
         '<div style="font:500 14px \'Poppins\';color:var(--text-primary);">' + title + '</div>' +
