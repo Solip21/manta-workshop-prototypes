@@ -812,7 +812,7 @@ function episodeRowHTML(title, date){
 }
 
 function myOwnedRowsHTML(){
-  if(S.myTab !== 'Unlocked' && S.myTab !== 'Saved') {
+  if(S.myTab !== 'Favorite' && S.myTab !== 'Saved') {
     return '<div style="padding:60px 16px;text-align:center;font:400 13px \'Poppins\';color:var(--text-tertiary);">Nothing here yet.</div>';
   }
   return OWNED_ROWS.map(r =>
@@ -901,7 +901,7 @@ function favoritePromptHTML(){
 }
 
 function saveNote(){
-  S.myTab = 'Unlocked';
+  S.myTab = 'Favorite';
   stack.pop();
   stack.push({id:'mySeries'});
   renderStack(true);
