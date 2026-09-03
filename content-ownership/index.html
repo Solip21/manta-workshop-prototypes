@@ -281,6 +281,8 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 
 /* ---------- content-ownership additions ---------- */
 .nav-mytab{position:absolute;right:16px;top:0;height:44px;display:flex;align-items:center;font:500 13px 'Poppins';color:var(--brand-link);}
+.co-nav-right-icons{position:absolute;right:8px;top:0;height:44px;display:flex;align-items:center;gap:4px;color:var(--text-primary);}
+.co-nav-icon-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
 .co-func-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--text-primary);border-radius:999px;}
 .co-func-btn.active{background:#4D4AFF;}
 .co-fandom-entry{display:flex;align-items:center;gap:12px;width:100%;background:var(--surface-container);border-radius:12px;padding:14px 16px;text-align:left;color:var(--text-primary);}
@@ -335,7 +337,7 @@ textarea.q-field::placeholder{color:var(--text-placeholder);}
 .co-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 16px;}
 .co-grid-card{display:flex;flex-direction:column;}
 .co-section-title{font:600 18px 'Poppins';color:var(--text-primary);padding:24px 16px 12px;}
-.co-fandom-row{display:flex;align-items:center;gap:12px;padding:48px 16px 16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:16px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.co-fandom-row{display:flex;align-items:center;gap:12px;padding:48px 16px 32px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:16px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .co-fandom-row::-webkit-scrollbar{display:none;}
 .co-fandom-card{
   position:relative;flex:0 0 172px;border-radius:20px;padding:46px 16px 16px;
@@ -437,7 +439,7 @@ const S = {
   seriesTitle: 'Under the Oak Tree',
   isFavorite: false,
   note: '',
-  myTab: 'Favorite',
+  myTab: 'Unlocked',
   toastMsg: '',
   promoOpen: true
 };
@@ -542,6 +544,8 @@ const ICON_FUNC_BELL = '<svg width="28" height="28" viewBox="0 0 28 28" fill="no
 const ICON_FUNC_PLUS = '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block;"><path d="M15 13H24.25V15H15V24.25H13V15H3.75V13H13V3.75H15V13Z" fill="#EDF0F7"/></svg>';
 const ICON_FUNC_IMAGEBOX = '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block;"><path d="M22 25H6V23H22V25Z" fill="#EDF0F7"/><path d="M10.25 8.25C11.3546 8.25 12.25 9.14543 12.25 10.25C12.25 11.3546 11.3546 12.25 10.25 12.25C9.14543 12.25 8.25 11.3546 8.25 10.25C8.25 9.14543 9.14543 8.25 10.25 8.25Z" fill="#EDF0F7"/><path fill-rule="evenodd" clip-rule="evenodd" d="M20.0498 3.75C20.5933 3.75 21.0616 3.74892 21.4453 3.78027C21.8406 3.81258 22.234 3.8844 22.6123 4.07714C23.1765 4.36472 23.6353 4.82347 23.9228 5.38769C24.1156 5.76598 24.1874 6.15943 24.2197 6.55468C24.2511 6.93835 24.25 7.40664 24.25 7.95019V18.6504C24.25 18.9138 24.2511 19.1719 24.2334 19.3887C24.2147 19.6172 24.1704 19.8869 24.0322 20.1582C23.8405 20.5345 23.5345 20.8405 23.1582 21.0322C22.8869 21.1704 22.6172 21.2147 22.3887 21.2334C22.1719 21.2511 21.9138 21.25 21.6504 21.25H7.95019C7.40664 21.25 6.93835 21.2511 6.55468 21.2197C6.15943 21.1874 5.76598 21.1156 5.38769 20.9228C4.82347 20.6353 4.36472 20.1765 4.07714 19.6123C3.8844 19.234 3.81258 18.8406 3.78027 18.4453C3.74892 18.0616 3.75 17.5933 3.75 17.0498V7.95019C3.75 7.40664 3.74892 6.93835 3.78027 6.55468C3.81258 6.15943 3.88439 5.76599 4.07714 5.38769C4.36472 4.82347 4.82347 4.36472 5.38769 4.07714C5.76599 3.88439 6.15943 3.81258 6.55468 3.78027C6.93835 3.74892 7.40664 3.75 7.95019 3.75H20.0498ZM22.25 14.0107C14.7132 14.1986 9.84433 17.1845 7.3164 19.2461C7.49665 19.2481 7.70495 19.25 7.95019 19.25H21.6504C21.9467 19.25 22.109 19.2488 22.2256 19.2393C22.2297 19.2389 22.2336 19.2376 22.2373 19.2373C22.2376 19.2336 22.2389 19.2297 22.2393 19.2256C22.2488 19.109 22.25 18.9467 22.25 18.6504V14.0107ZM7.95019 5.75C7.37364 5.75 7.0011 5.75126 6.71777 5.77441C6.44619 5.79661 6.34533 5.83418 6.29589 5.85937C6.10793 5.95521 5.95521 6.10793 5.85937 6.29589C5.83418 6.34533 5.79661 6.44619 5.77441 6.71777C5.75126 7.0011 5.75 7.37364 5.75 7.95019V17.0498C5.75 17.4211 5.75125 17.7077 5.75781 17.9404C8.44046 15.6779 13.8188 12.2052 22.25 12.0088V7.95019C22.25 7.37364 22.2487 7.0011 22.2256 6.71777C22.2034 6.44619 22.1658 6.34533 22.1406 6.29589C22.0448 6.10793 21.8921 5.95521 21.7041 5.85937C21.6547 5.83418 21.5538 5.7966 21.2822 5.77441C20.9989 5.75126 20.6263 5.75 20.0498 5.75H7.95019Z" fill="#EDF0F7"/></svg>';
 const ICON_SORT_CHEVRON = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="display:block;"><path d="M7.46973 12.5303L3.46973 8.53027C3.32907 8.38962 3.25 8.19891 3.25 8C3.25 7.80109 3.32907 7.61038 3.46973 7.46973L7.46973 3.46973L8.53027 4.53027L5.06055 8L8.53027 11.4697L7.46973 12.5303Z" fill="#EDF0F7"/></svg>';
+const ICON_BOX_UPPERBAR = '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:block;"><path d="M18 16.1504H10V13.8496H18V16.1504Z" fill="#EDF0F7"/><path fill-rule="evenodd" clip-rule="evenodd" d="M22.999 8.5C23.5513 8.5 23.999 8.94774 23.999 9.5L24 18.5C24 19.1835 24.001 19.7566 23.9629 20.2236C23.9238 20.7022 23.8381 21.1571 23.6182 21.5889C23.2826 22.2474 22.7474 22.7826 22.0889 23.1182C21.6571 23.3382 21.2023 23.4238 20.7236 23.4629C20.2566 23.501 19.6835 23.5 19 23.5H9.00098C8.31754 23.5 7.74434 23.501 7.27734 23.4629C6.79871 23.4238 6.3439 23.3381 5.91211 23.1182C5.25356 22.7826 4.71741 22.2474 4.38184 21.5889C4.1619 21.1571 4.07722 20.7022 4.03809 20.2236C3.9999 19.7566 4.00102 19.1835 4.00098 18.5L4 9.5C4 9.23479 4.10544 8.9805 4.29297 8.79297C4.4805 8.60543 4.73478 8.5 5 8.5H22.999ZM6.00098 18.5C6.00102 19.2165 6.00128 19.6939 6.03125 20.0605C6.06025 20.4152 6.11168 20.5777 6.16406 20.6807C6.30786 20.9629 6.53714 21.1931 6.81934 21.3369C6.92226 21.3894 7.08541 21.4407 7.44043 21.4697C7.80707 21.4997 8.28472 21.5 9.00098 21.5H19C19.7165 21.5 20.1939 21.4997 20.5605 21.4697C20.9152 21.4407 21.0777 21.3893 21.1807 21.3369C21.4629 21.1931 21.6921 20.9629 21.8359 20.6807C21.8884 20.5777 21.9398 20.4155 21.9688 20.0605C21.9987 19.6938 22 19.2165 22 18.5L21.999 10.5H6L6.00098 18.5Z" fill="#EDF0F7"/><path d="M21.5 6H6.5V4H21.5V6Z" fill="#EDF0F7"/></svg>';
+const IMG_FANDOM_ICON = 'data:image/png;base64,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';
 const ICON_HOME = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1v-9Z" fill="currentColor"/></svg>';
 const ICON_SEARCH = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M20 20l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
 const ICON_OFFER = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="12" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M4 8l3-4h10l3 4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
@@ -627,7 +631,10 @@ function screens(entry){
     case 'seriesHome': return {
       title:'', back:false,
       navExtra:
-        '<button class="nav-mytab" onclick="push(\'mySeries\')">' + ICON_NAV_LINK.replace('width="28" height="28"', 'width="20" height="20"') + '</button>',
+        '<div class="co-nav-right-icons">' +
+          '<button class="co-nav-icon-btn" onclick="push(\'mySeries\')">' + ICON_BOX_UPPERBAR.replace('width="28" height="28"', 'width="20" height="20"') + '</button>' +
+          '<button class="co-nav-icon-btn">' + ICON_NAV_LINK.replace('width="28" height="28"', 'width="20" height="20"') + '</button>' +
+        '</div>',
       body:
         '<div style="position:relative;">' +
           '<img src="' + IMG_COVER_OAKTREE + '" style="width:100%;height:260px;object-fit:cover;display:block;">' +
@@ -657,7 +664,7 @@ function screens(entry){
             '<button class="co-func-btn">' + ICON_FUNC_IMAGEBOX + '</button>' +
           '</div>' +
           '<button class="co-fandom-entry" onclick="push(\'fandomBoard\')">' +
-            '<div style="width:20px;height:20px;border-radius:999px;background:#4D4AFF;flex-shrink:0;"></div>' +
+            '<img src="' + IMG_FANDOM_ICON + '" style="width:20px;height:20px;border-radius:999px;flex-shrink:0;object-fit:cover;">' +
             '<div style="flex:1;display:flex;flex-direction:column;gap:2px;">' +
               '<div style="font:600 14px \'Poppins\';color:var(--text-primary);">Fandom Board</div>' +
               '<div style="font:400 10px \'Poppins\';color:var(--text-secondary);">Share highlights and polls with fellow fans</div>' +
@@ -738,7 +745,7 @@ function episodeRowHTML(title, date){
 }
 
 function myOwnedRowsHTML(){
-  if(S.myTab !== 'Favorite' && S.myTab !== 'Saved') {
+  if(S.myTab !== 'Unlocked' && S.myTab !== 'Saved') {
     return '<div style="padding:60px 16px;text-align:center;font:400 13px \'Poppins\';color:var(--text-tertiary);">Nothing here yet.</div>';
   }
   return OWNED_ROWS.map(r =>
@@ -773,7 +780,6 @@ function fandomPostHTML(p){
 }
 
 function setMyTab(tab){
-  if(tab === 'Unlocked'){ push('seriesHome'); return; }
   S.myTab = tab;
   const list = document.getElementById('my-series-list');
   if(list) list.innerHTML = myOwnedRowsHTML();
@@ -820,7 +826,7 @@ function favoritePromptHTML(){
 }
 
 function saveNote(){
-  S.myTab = 'Favorite';
+  S.myTab = 'Unlocked';
   stack.pop();
   stack.push({id:'mySeries'});
   renderStack(true);
